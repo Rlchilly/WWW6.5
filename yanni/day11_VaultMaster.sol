@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "./ownable.sol";
+import "./day11_Ownable.sol";
 
 //两个事件
 //DepositSuccessful用于记录成功的存款，包括存款者地址和金额；

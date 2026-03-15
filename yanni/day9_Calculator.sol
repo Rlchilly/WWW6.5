@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./ScientificCalculator.sol";
+import "./day9_ScientificCalculator.sol";
 
 //基础计算器，支持加减乘除，并调用 ScientificCalculator 进行幂和平方根运算
 contract Calculator {
@@ -58,7 +58,7 @@ contract Calculator {
 
     //平方根运算，通过低级调用 ScientificCalculator 执行
     //number 要计算平方根的数字 return 平方根结果
-    function calculateSquareRoot(uint256 number) public view returns (uint256) {
+    function calculateSquareRoot(uint256 number) public returns (uint256) {
         require(scientificCalculatorAddress != address(0), "ScientificCalculator not set");
 
         bytes memory data = abi.encodeWithSignature("squareRoot(int256)", number);

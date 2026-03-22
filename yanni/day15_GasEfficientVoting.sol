@@ -15,7 +15,7 @@ contract GasEfficientVoting {
 
     mapping(uint8 => Proposal) public proposals;
 
-    # 一个 storage slot 永远是 256 bits（32 bytes）
+    // 一个 storage slot 永远是 256 bits（32 bytes）
     mapping(address => uint256) private voterRegistry;
 
     mapping(uint8 => uint32) public proposalVoterCount;
@@ -54,6 +54,7 @@ contract GasEfficientVoting {
         require(currentTime <= proposals[proposalId].endTime, "Voting ended");
 
         uint256 voterData = voterRegistry[msg.sender];
+        // mask只看某一位的数值，很搞脑子
         uint256 mask = 1 << proposalId;
         require((voterData & mask) == 0, "Already voted");
 

@@ -2,18 +2,35 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract SubscriptionStorageLayout {
-    address public logicContract;
-    address public owner;
+import "./day17_SubscriptionStorageLayout.sol";
 
-    struct Subscription {
-        uint8 planId; //节省 gas
-        uint256 expiry; //时间戳
-        bool paused;  //一个开关
+contract SubscriptionLogicV1 is SubscriptionStorageLayout {
+    //添加新套餐
+    function addPlan(uint8 planId, uint256 price, uint256 duration) external {
+        planPrices[planId] = price;
+        planDuration[planId] = duration;
     }
 
-    mapping(address => Subscription) public subscriptions;
-    mapping(uint8 => uint256) public planPrices;
-    mapping(uint8 => uint256) public planDuration;
+    //用户订阅
+    function subscribe(uint8 planId) external payable {
+        require(planPrices[planId] > 0, "Invalid plan");
+        require(msg.value >= planPrices[planId], "Insufficient payment");
+
+        Subscription storage s = subscriptions[msg.sender];
+        if (block.timestamp < s.expiry) {
+            s.expiry += planDuration[planId];
+        } else {
+            s.expiry = block.timestamp + planDuration[planId];
+        }
+
+        s.planId = planId;
+        s.paused = false;
+    }
+
+    //检查活跃状态
+    function isActive(address user) external view returns (bool) {
+        Subscription memory s = subscriptions[user];
+        return (block.timestamp < s.expiry && !s.paused);
+    }
 }
 

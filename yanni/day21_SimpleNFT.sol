@@ -95,11 +95,16 @@ contract SimpleNFT is IERC721 {
     // ERC-721 标准设计上允许两个重载版本的 safeTransferFrom，以适应不同的使用场景
     // 简化版
     function safeTransferFrom(address from, address to, uint256 tokenId) public override {
-        safeTransferFrom(from, to, tokenId, "");
+        this.safeTransferFrom(from, to, tokenId, ""); // Explicit external call
     }
 
-    // 带data
-    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public override {
+    // 带data!!!这里原代码deploy的时候有参数位置一致问题，将memory改成calldata
+    function safeTransferFrom(
+        address from, 
+        address to, 
+        uint256 tokenId, 
+        bytes calldata data
+    ) public override {
         require(_isApprovedOrOwner(msg.sender, tokenId), "Not authorized");
         _safeTransfer(from, to, tokenId, data);
     }
